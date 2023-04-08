@@ -50,6 +50,8 @@ services:
       dockerfile: CartService/Dockerfile
     depends_on:
       - cache
+    environment:
+      CONNECTION_STRING: "redis://cache:6379"
     ports:
       - 8081:80
     links:

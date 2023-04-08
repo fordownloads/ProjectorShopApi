@@ -1,9 +1,11 @@
 # Дипломный проект
+
 Разработка  информационной системы «Продажа проекторов» на платформе .NET 6.0 с микросервисами и Android при использовании Visual Studio 2022.
 
 **Репозиторий с микросервисами**
 
 ## Запуск проекта
+
 1. Установите Docker
 2. Создайте хранилища:
 ```sh
@@ -16,6 +18,7 @@ docker volume cachevolume
 *Swagger находится на http://localhost:8080/swagger/index.html*
 
 ## Тестирование
+
 1. Запуск баз данных:
 ```sh
 docker run --name test-postgres -e POSTGRES_PASSWORD=test -e POSTGRES_DATABASE=test -e POSTGRES_USER=test -p 5532:5432 -d postgres
@@ -24,6 +27,7 @@ docker run --name test-redis -p 6380:6379 -d redis/redis-stack:latest
 2. Visual Studio -> ПКМ по решению -> Выполнить тесты
 
 ## Деплой на удаленный сервер
+
 ```sh
 docker-compose build
 docker save apigateway:latest catalogservice:latest authservice:latest cartservice:latest | ssh -C <ssh-user>@<ssh-server> docker load
@@ -32,7 +36,20 @@ ssh -C <ssh-user@ssh-server> sh -c "cd ~/.deploy;docker-compose up -d --force-re
 ```
 *<<ssh-user@ssh-server>> меняем на свое*
 
+*Необходимо 20 Гб свободного места*
+
+## Конфиг сервисов в docker-compose.yml
+
+**ALLOW_REGISTRATION**: "true"/"false" - разрешить регистрацию новых пользователей (Auth service). Если не задано: "true"
+
+**ALLOW_AUTOFILL_DB**: "true"/"false" - заполнять таблицы тестовыми данными при запуске, если в них ничего нет (Catalog service). Если не задано: "false"
+
+**CONNECTION_STRING**: "string" - строка подключения к базе данных (Catalog/Auth/Cart service)
+    
+
+
 ## Конфиг nginx
+
 `server {...`
 
 ```

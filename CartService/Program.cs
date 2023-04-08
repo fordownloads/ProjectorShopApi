@@ -7,7 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<IndexCreationService>();
-builder.Services.AddSingleton(new RedisConnectionProvider("redis://cache:6379"));
+builder.Services.AddSingleton(new RedisConnectionProvider(Environment.GetEnvironmentVariable("CONNECTION_STRING")));
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

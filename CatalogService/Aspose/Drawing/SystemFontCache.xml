@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FontFamilies>
+    <changed>2022-12-06T08:54:44.288081Z</changed>
+    <Family name="DejaVu Sans Mono">
+        <Font style="Book" type="TTF" name="DejaVu Sans Mono" path="/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf" offset="0" />
+        <Font style="Bold" type="TTF" name="DejaVu Sans Mono Bold" path="/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf" offset="0" />
+    </Family>
+    <Family name="DejaVu Serif">
+        <Font style="Book" type="TTF" name="DejaVu Serif" path="/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf" offset="0" />
+        <Font style="Bold" type="TTF" name="DejaVu Serif Bold" path="/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf" offset="0" />
+    </Family>
+    <Family name="DejaVu Sans">
+        <Font style="Book" type="TTF" name="DejaVu Sans" path="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf" offset="0" />
+        <Font style="Bold" type="TTF" name="DejaVu Sans Bold" path="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" offset="0" />
+    </Family>
+    <Family name="Open Sans Light">
+        <Font style="Regular" type="TTF" name="Open Sans Light" path="/usr/share/fonts/truetype/open-sans/OpenSans-Light.ttf" offset="0" />
+        <Font style="Italic" type="TTF" name="Open Sans Light Italic" path="/usr/share/fonts/truetype/open-sans/OpenSans-LightItalic.ttf" offset="0" />
+    </Family>
+    <Family name="Open Sans Condensed">
+        <Font style="Bold" type="TTF" name="Open Sans Condensed Bold" path="/usr/share/fonts/truetype/open-sans/OpenSans-CondBold.ttf" offset="0" />
+    </Family>
+    <Family name="Open Sans Extrabold">
+        <Font style="Regular" type="TTF" name="Open Sans Extrabold" path="/usr/share/fonts/truetype/open-sans/OpenSans-ExtraBold.ttf" offset="0" />
+        <Font style="Italic" type="TTF" name="Open Sans Extrabold Italic" path="/usr/share/fonts/truetype/open-sans/OpenSans-ExtraBoldItalic.ttf" offset="0" />
+    </Family>
+    <Family name="Open Sans">
+        <Font style="Regular" type="TTF" name="Open Sans" path="/usr/share/fonts/truetype/open-sans/OpenSans-Regular.ttf" offset="0" />
+        <Font style="Italic" type="TTF" name="Open Sans Italic" path="/usr/share/fonts/truetype/open-sans/OpenSans-Italic.ttf" offset="0" />
+        <Font style="Bold" type="TTF" name="Open Sans Bold" path="/usr/share/fonts/truetype/open-sans/OpenSans-Bold.ttf" offset="0" />
+        <Font style="Bold Italic" type="TTF" name="Open Sans Bold Italic" path="/usr/share/fonts/truetype/open-sans/OpenSans-BoldItalic.ttf" offset="0" />
+    </Family>
+    <Family name="Open Sans Condensed Light">
+        <Font style="Regular" type="TTF" name="Open Sans Condensed Light" path="/usr/share/fonts/truetype/open-sans/OpenSans-CondLight.ttf" offset="0" />
+        <Font style="Italic" type="TTF" name="Open Sans Condensed Light Italic" path="/usr/share/fonts/truetype/open-sans/OpenSans-CondLightItalic.ttf" offset="0" />
+    </Family>
+    <Family name="Open Sans Semibold">
+        <Font style="Regular" type="TTF" name="Open Sans Semibold" path="/usr/share/fonts/truetype/open-sans/OpenSans-Semibold.ttf" offset="0" />
+        <Font style="Italic" type="TTF" name="Open Sans Semibold Italic" path="/usr/share/fonts/truetype/open-sans/OpenSans-SemiboldItalic.ttf" offset="0" />
+    </Family>
+</FontFamilies>

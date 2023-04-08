@@ -1,0 +1,9 @@
+*/bin
+*/obj
+bin
+obj
+deploy.cmd
+*.7z
+*.zip
+*.tar
+.vs

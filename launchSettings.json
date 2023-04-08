@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "apigateway": "StartWithoutDebugging",
+        "authdatabase": "StartWithoutDebugging",
+        "authservice": "StartDebugging",
+        "catalogdatabase": "StartWithoutDebugging",
+        "catalogservice": "StartDebugging"
+      }
+    }
+  }
+}

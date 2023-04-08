@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "postgresql1": {
+      "containerPorts": "5432:5432",
+      "secretStore": "LocalSecretsFile",
+      "containerName": "catalogdatabase",
+      "containerImage": "postgres",
+      "type": "postgresql.container",
+      "connectionId": "Default",
+      "dynamicId": null
+    }
+  }
+}

@@ -1,0 +1,95 @@
+version: '3.4'
+
+services:
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: APIGateway/Dockerfile
+    depends_on:
+      - catalogservice
+      - authservice
+      - cartservice
+    ports:
+      - 8080:80
+    links:
+      - catalogservice:catalogservice
+      - authservice:authservice
+      - cartservice:cartservice
+
+  catalogservice:
+    image: ${DOCKER_REGISTRY-}catalogservice
+    build:
+      context: .
+      dockerfile: CatalogService/Dockerfile
+    depends_on:
+      - catalogdatabase
+    environment:
+      ALLOW_AUTOFILL_DB: "true"
+      CONNECTION_STRING: "Server=catalogdatabase;Username=cataloguser;Password=soejbnJbKJHbsdhsdkJghjsd;Database=catalog"
+    links:
+      - catalogdatabase:catalogdatabase
+
+  authservice:
+    image: ${DOCKER_REGISTRY-}authservice
+    build:
+      context: .
+      dockerfile: AuthService/Dockerfile
+    depends_on:
+      - authdatabase
+    environment:
+      ALLOW_REGISTRATION: "false"
+      CONNECTION_STRING: "Server=authdatabase;Username=authuser;Password=sdsdegrbfbhjhnsgtvbfveJID;Database=auth"
+    links:
+      - authdatabase:authdatabase
+
+  cartservice:
+    image: ${DOCKER_REGISTRY-}cartservice
+    build:
+      context: .
+      dockerfile: CartService/Dockerfile
+    depends_on:
+      - cache
+    ports:
+      - 8081:80
+    links:
+      - cache:cache
+    
+  catalogdatabase:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: cataloguser
+      POSTGRES_PASSWORD: soejbnJbKJHbsdhsdkJghjsd
+      POSTGRES_DB: catalog
+    ports:
+      - 5430:5432
+    volumes:
+      - catalogvolume:/var/lib/postgresql/data
+  authdatabase:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: authuser
+      POSTGRES_PASSWORD: sdsdegrbfbhjhnsgtvbfveJID
+      POSTGRES_DB: auth
+    ports:
+      - 5431:5432
+    volumes:
+      - authvolume:/var/lib/postgresql/data
+  cache:
+    image: redis/redis-stack:latest
+    restart: always
+    ports:
+      - '6379:6379'
+      - '8001:8001'
+    volumes: 
+      - cachevolume:/data
+
+volumes:
+  catalogvolume:
+   external: true
+  authvolume:
+   external: true
+  cachevolume:
+   external: true

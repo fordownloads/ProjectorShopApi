@@ -16,13 +16,23 @@ namespace CatalogService.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index([FromQuery] int page = 1, [FromQuery] string idList = "null")
+        public async Task<IActionResult> Index
+        (
+            [FromQuery] int page = 1, 
+            [FromQuery] string idList = "null", 
+            [FromQuery] string species = "null",
+            [FromQuery] int limit = 30
+        )
         {
             var idListList = idList == "null" ? new List<Guid>() : idList.Split(',').Select(x => Guid.Parse(x)).ToList();
-            var limit = idList == "null" ? 30 : 10000;
+            if (idList != "null")
+                limit = 10000;
             var offset = limit * (page - 1);
 
             var where = idList == "null" ? db.Products : db.Products.Where(x => idListList.Contains((Guid)x.Id));
+
+            if (species != "null")
+                where = where.Where(x => x.Species == species);
 
             var result = await where
                 .Skip(offset)
@@ -30,7 +40,7 @@ namespace CatalogService.Controllers
                 .Include(p => p.Brand)
                 .Select(p => new
                     {
-                        p.Id, p.Model, p.Color, p.Resolution,
+                        p.Id, p.Name, p.PriceKopeck, p.Species, p.Available, p.WeightG,
                         Brand = new
                         {
                             p.Brand.Name,
@@ -47,8 +57,7 @@ namespace CatalogService.Controllers
         {
             var result = await db.Products
                 .Where(p => p.Id == id).Include(p => p.Brand)
-                .Select(p => new {  p.Id,  p.Model,  p.Color, p.Resolution,
-                        p.OtherSpecs, Brand = new { p.Brand.Name, p.Brand.Id } }
+                .Select(p => new {  p.Id,  p.Name,  p.Spec, p.Species, p.Available, p.PriceKopeck, p.Description, p.Taste, p.WeightG, p.Wet, Brand = new { p.Brand.Name, p.Brand.Id } }
                 ).FirstOrDefaultAsync();
 
             if (result == null)
@@ -62,8 +71,14 @@ namespace CatalogService.Controllers
         {
             var result = await db.Products
                 .Where(p => p.BrandId == id)
-                .Select(p => new { p.Id,  p.Model,  p.Color, p.Resolution,
-                        Brand = new { p.Brand.Name, p.Brand.Id } }
+                .Select(p => new {
+                    p.Id,
+                    p.Name,
+                    p.PriceKopeck,
+                    p.Species,
+                    p.Available,
+                    p.WeightG,
+                    Brand = new { p.Brand.Name, p.Brand.Id } }
                 ).ToArrayAsync();
 
             if (result == null)
@@ -72,20 +87,16 @@ namespace CatalogService.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Image/{id}/{photoId}")]
-        public async Task<IActionResult> GetPhoto(Guid id, int photoId)
+        [HttpGet("Image/{id}")]
+        [ResponseCache(VaryByHeader = "User-Agent", Duration = 6000)]
+        public async Task<IActionResult> GetPhoto(Guid id)
         {
             var product = db.Products
                 .Where(p => p.Id == id);
 
             try
             {
-                var photo = await (photoId switch
-                {
-                    0 => product.Select(p => p.Photo1),
-                    1 => product.Select(p => p.Photo2),
-                    _ => throw new ArgumentException()
-                }).FirstOrDefaultAsync();
+                var photo = await product.Select(p => p.Photo1).FirstOrDefaultAsync();
                 if (photo == null)
                     return NotFound();
 
@@ -122,15 +133,19 @@ namespace CatalogService.Controllers
 
             try
             {
-                result.Color = product.Color;
-                result.Resolution = product.Resolution;
+                result.Spec = product.Spec;
+                result.Species = product.Species;
                 result.BrandId = product.BrandId;
-                result.Model = product.Model;
-                result.Price = product.Price;
-                //result.OtherSpecs = product.OtherSpecs;
+                result.Name = product.Name;
+                result.PriceKopeck = product.PriceKopeck;
+                result.Wet = product.Wet;
+                result.Taste = product.Taste;
+                result.Available = product.Available;
+                result.Description = product.Description;
+                result.WeightG = product.WeightG;
                 await db.SaveChangesAsync();
 
-                return Ok();
+                return Ok(product);
             }
             catch (Exception e) { return Ok(e.Message); }            
         }
@@ -149,8 +164,8 @@ namespace CatalogService.Controllers
             }
         }
 
-        [HttpPost("EditPhoto/{id}/{photoId}")]
-        public async Task<IActionResult> EditPhotos(Guid id, int photoId)
+        [HttpPost("EditPhoto/{id}")]
+        public async Task<IActionResult> EditPhotos(Guid id)
         {
             var result = await db.Products.Where(p => p.Id == id).FirstOrDefaultAsync();
 
@@ -161,17 +176,7 @@ namespace CatalogService.Controllers
 
             try
             {
-                switch (photoId)
-                {
-                    case 0:
-                        result.Photo1 = photo;
-                        break;
-                    case 1:
-                        result.Photo2 = photo;
-                        break;
-                    default:
-                        return BadRequest("Invalid id");
-                }
+                result.Photo1 = photo;
                 await db.SaveChangesAsync();
 
                 return Ok();

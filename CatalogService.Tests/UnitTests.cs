@@ -17,6 +17,7 @@ namespace CatalogService.Tests
         List<Brand> brands;
         List<Product> products;
         private readonly ITestOutputHelper output;
+        int brandsCount = 18;
 
         public UnitTests(ITestOutputHelper output)
         {
@@ -31,7 +32,7 @@ namespace CatalogService.Tests
             prodController = new ProductsController(database);
             brandController = new BrandsController(database);
 
-            brands = FakerController.CreateBrands(rnd, 100, "M:\\source\\ProjectorShop\\CatalogService").ToList();
+            brands = FakerController.CreateBrands(rnd, brandsCount, "M:\\source\\ProjectorShop\\CatalogService").ToList();
 
             database.Brands.AddRange(brands);
             database.SaveChanges();
@@ -58,9 +59,7 @@ namespace CatalogService.Tests
             for (int i = 0; i < 30; i++)
             {
                 Assert.NotNull(list[i].Id);
-                Assert.NotNull(list[i].Model);
-                Assert.NotNull(list[i].Color);
-                Assert.NotNull(list[i].Resolution);
+                Assert.NotNull(list[i].Name);
                 Assert.NotNull(list[i].Brand);
             }
         }
@@ -80,9 +79,7 @@ namespace CatalogService.Tests
             for (int i = 0; i < 10; i++)
             {
                 Assert.NotNull(list[i].Id);
-                Assert.NotNull(list[i].Model);
-                Assert.NotNull(list[i].Color);
-                Assert.NotNull(list[i].Resolution);
+                Assert.NotNull(list[i].Name);
                 Assert.NotNull(list[i].Brand);
             }
         }
@@ -123,7 +120,7 @@ namespace CatalogService.Tests
             var dyn = ok.Value as dynamic;
             var list = ToDynamicList(dyn);
 
-            Assert.Equal(0, list.Count);
+            Assert.Equal(4, list.Count);
         }
 
         [Fact]
@@ -136,7 +133,7 @@ namespace CatalogService.Tests
             var dyn = ok.Value as dynamic;
             var list = ToDynamicList(dyn);
 
-            Assert.Equal(2, list.Count);
+            Assert.Equal(3, list.Count);
         }
 
         [Fact]
@@ -155,9 +152,9 @@ namespace CatalogService.Tests
             var ret = await prodController.Edit(new Product()
             {
                 Id = (Guid)products[0].Id,
-                Color = "TEST1",
-                Resolution = "TEST2",
-                Model = "TEST3",
+                Spec = "TEST1",
+                Species = "TEST2",
+                Name = "TEST3",
                 BrandId = newGuid
             });
 
@@ -166,9 +163,9 @@ namespace CatalogService.Tests
             var changed = database.Products.Where(x => x.Id == products[0].Id).FirstOrDefault();
 
             Assert.NotNull(changed);
-            Assert.Equal("TEST1", changed.Color);
-            Assert.Equal("TEST2", changed.Resolution);
-            Assert.Equal("TEST3", changed.Model);
+            Assert.Equal("TEST1", changed.Spec);
+            Assert.Equal("TEST2", changed.Species);
+            Assert.Equal("TEST3", changed.Name);
             Assert.Equal(newGuid, changed.BrandId);
         }
 
@@ -178,41 +175,28 @@ namespace CatalogService.Tests
             var newGuid = brands[0].Id;
             var ret = await prodController.Create(new Product()
             {
-                Color = "CTEST1",
-                Resolution = "CTEST2",
-                Model = "CTEST3",
+                Spec = "CTEST1",
+                Species = "CTEST2",
+                Name = "CTEST3",
                 BrandId = newGuid
             });
 
             Assert.IsType<OkObjectResult>(ret);
 
-            var created = database.Products.Where(x => x.Model == "CTEST3").FirstOrDefault();
+            var created = database.Products.Where(x => x.Name == "CTEST3").FirstOrDefault();
 
             Assert.NotNull(created);
-            Assert.Equal("CTEST1", created.Color);
-            Assert.Equal("CTEST2", created.Resolution);
+            Assert.Equal("CTEST1", created.Spec);
+            Assert.Equal("CTEST2", created.Species);
             Assert.Equal(newGuid, created.BrandId);
         }
 
         [Fact]
         public async void Products_GetPhoto_Ok()
         {
-            var ret = await prodController.GetPhoto(products[50].Id.Value, 0);
+            var ret = await prodController.GetPhoto(products[50].Id.Value);
             Assert.IsType<FileContentResult>(ret);
         }
-
-        [Fact]
-        public async void Products_GetPhoto_Fail()
-        {
-            var ret = await prodController.GetPhoto(products[50].Id.Value, 10);
-            Assert.IsType<BadRequestResult>(ret);
-        }
-
-
-
-
-
-
 
 
         [Fact]
@@ -225,29 +209,9 @@ namespace CatalogService.Tests
             var dyn = ok.Value as dynamic;
             var list = ToDynamicList(dyn);
 
-            Assert.Equal(30, list.Count);
+            Assert.Equal(brandsCount, list.Count);
 
-            for (int i = 0; i < 30; i++)
-            {
-                Assert.NotNull(list[i].Id);
-                Assert.NotNull(list[i].Name);
-                Assert.NotNull(list[i].Country);
-            }
-        }
-
-        [Fact]
-        public async void Brands_Index_Last_Page()
-        {
-            var ret = await brandController.Details(page: 4);
-            Assert.NotNull(ret);
-            var ok = Assert.IsType<OkObjectResult>(ret);
-
-            var dyn = ok.Value as dynamic;
-            var list = ToDynamicList(dyn);
-
-            Assert.Equal(10, list.Count);
-
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < brandsCount; i++)
             {
                 Assert.NotNull(list[i].Id);
                 Assert.NotNull(list[i].Name);
@@ -265,9 +229,9 @@ namespace CatalogService.Tests
             var dyn = ok.Value as dynamic;
             var list = ToDynamicList(dyn);
 
-            Assert.Equal(100, list.Count);
+            Assert.Equal(brandsCount, list.Count);
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < brandsCount; i++)
             {
                 Assert.NotNull(list[i].Id);
                 Assert.NotNull(list[i].Name);
@@ -361,7 +325,7 @@ namespace CatalogService.Tests
         [Fact]
         public async void Brands_GetPhoto()
         {
-            var ret = await brandController.GetLogo(brands[50].Id.Value);
+            var ret = await brandController.GetLogo(brands[10].Id.Value);
             Assert.IsType<FileContentResult>(ret);
         }
 

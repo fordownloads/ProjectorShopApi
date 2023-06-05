@@ -257,6 +257,10 @@ namespace APIGateway.Controllers
         public async Task<IActionResult> BIndex(int page = 1) =>
             await MicroServiceRequest("catalogservice/brands?page=" + page);
 
+        [HttpGet("Brands/Details")]
+        public async Task<IActionResult> BDetails(int page = 1) =>
+            await MicroServiceRequest("catalogservice/brands/details?page=" + page);
+
         [HttpGet("Brands/{id}")]
         public async Task<IActionResult> BIndex(Guid id) =>
             await MicroServiceRequest("catalogservice/brands/" + id);
@@ -299,8 +303,8 @@ namespace APIGateway.Controllers
         }
 
         [HttpGet("Products")]
-        public async Task<IActionResult> PIndex(int page = 1, string idList = "null") =>
-            await MicroServiceRequest("catalogservice/products?page=" + page + "&idList=" + idList);
+        public async Task<IActionResult> PIndex(int page = 1, string idList = "null", string species = "null", int limit = 30) =>
+            await MicroServiceRequest("catalogservice/products?page=" + page + "&idList=" + idList + "&species=" + species + "&limit=" + limit);
 
         [HttpGet("Products/{id}")]
         public async Task<IActionResult> PIndex(Guid id) =>
@@ -310,9 +314,9 @@ namespace APIGateway.Controllers
         public async Task<IActionResult> PByBrand(Guid id) =>
             await MicroServiceRequest("catalogservice/products/bybrand/" + id);
 
-        [HttpGet("Products/Image/{id}/{photoId}")]
-        public async Task<IActionResult> PGetPhoto(Guid id, int photoId) =>
-            await MicroServiceRequest("catalogservice/products/image/" + id + "/" + photoId);
+        [HttpGet("Products/Image/{id}")]
+        public async Task<IActionResult> PGetPhoto(Guid id) =>
+            await MicroServiceRequest("catalogservice/products/image/" + id);
 
         [HttpPost("Products/Create")]
         public async Task<IActionResult> PCreate([FromBody] Product product)
@@ -330,13 +334,13 @@ namespace APIGateway.Controllers
             return await MicroServiceRequest("catalogservice/products/edit", product);
         }
 
-        [HttpPost("Products/EditPhoto/{id}/{photoId}")]
-        public async Task<IActionResult> PEditPhotos(IFormFile uploadedFile, Guid id, int photoId)
+        [HttpPost("Products/EditPhoto/{id}")]
+        public async Task<IActionResult> PEditPhotos(IFormFile uploadedFile, Guid id)
         {
             if (!await Authorized(Request))
                 return Unauthorized();
 
-            return await MicroServiceRequest("catalogservice/products/editphoto/" + id + "/" + photoId, uploadedFile, json: false);
+            return await MicroServiceRequest("catalogservice/products/editphoto/" + id, uploadedFile, json: false);
         }
 
         [HttpPost("Products/Delete/{id}")]

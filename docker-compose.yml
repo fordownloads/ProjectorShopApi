@@ -50,8 +50,10 @@ services:
       dockerfile: CartService/Dockerfile
     depends_on:
       - cache
+      - orderdatabase
     environment:
       CONNECTION_STRING: "redis://cache:6379"
+      CONNECTION_STRING_ORDERS: "Server=orderdatabase;Username=orderuser;Password=dasfedfdvvfrgewwdwDEVWD;Database=order"
     ports:
       - 8081:80
     links:
@@ -79,6 +81,18 @@ services:
       - 5431:5432
     volumes:
       - authvolume:/var/lib/postgresql/data
+
+  orderdatabase:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: orderuser
+      POSTGRES_PASSWORD: dasfedfdvvfrgewwdwDEVWD
+      POSTGRES_DB: order
+    ports:
+      - 5432:5432
+    volumes:
+      - cachevolume:/var/lib/postgresql/data
   cache:
     image: redis/redis-stack:latest
     restart: always

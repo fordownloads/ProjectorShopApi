@@ -39,7 +39,7 @@ namespace CatalogService.Controllers
         [HttpGet("FakeBrands")]
         public async Task<IActionResult> FakeBrands()
         {
-            await db.Brands.AddRangeAsync(CreateBrands(random, 100));
+            await db.Brands.AddRangeAsync(CreateBrands(random, 18));
             await db.SaveChangesAsync();
             return Ok();
         }
@@ -53,25 +53,17 @@ namespace CatalogService.Controllers
             };
             var descriptions = new string[]
             {
-                " - передовая компания по производству проекторов.",
-                " - отличный производителей проекторов.",
-                " - только качественное оборудование.",
+                " - передовая компания по производству высококачественных кормов.",
+                " - отличный производителей кормов.",
+                " - только качествнный кормов.",
                 " и точка.",
-                " - популярный производитель техники."
+                " - популярный производитель кормов для животных."
             };
             var brands = new string[]
             {
-                "Acer","BenQ","Cactus","Digma","Ligma","Epson",
-                "HIPER","HP","InFocus","Philips","Rombica","Samsung","ViewSonic","XGIMI","Xiaomi","ZDK",
-                "BrightLight","KingProj","Skoofedone","POOOp","Bebop","Retjio","WeeWee","BabbyJohn","Amigus",
-                "Dio","posOS","Qebra","Bebra","Billy Herrington Electronics","Gachi&Bindera",
-                "Kifeo","Lui","Boombassia","Tompson","Irain","Pisna","Updog","Joe","Candice",
-                "Reihka","Asiss","Zela","SYMFONIA","Leg","Oleg","WaNNA","NoGI","Ololsef","Hersojo",
-                "Uqrope","Ilyui","Debold","Rass","OSD","COK","Hoyux","Oxana","Nvord","iBLOON",
-                "Yijoba","Viktor","Japanese Image Company","Oi","PQ","Uert","Pops","Iver",
-                "Doos","Ooof","Rasa","Amenba","Voas","Uzad","Kahae","Rfowe","Adaop","Idap",
-                "Napoe","Uaso","Rasop","Ahodas","Tafidop","Rasov","Osas", "Ssdsd","Slpoe","Ietc",
-                "Ypwo","SLP","KASA","AFL","YPP","AWW","Vivitek","OPTOMA","Sima","HYRR","LDCCV","ACS"
+                "Updog","Pisna","Ligma","Mulina","DeeDeeGree","Wikas",
+                "Mulina","HoPs","Focus","Sima","Geliks","Oleg","WaNNA","Ololsef","Billy H. Foods",
+                "Dobry", "Мираторг", "Ангарский мясокомбинат", "Gulina"
             };
 
             return Enumerable.Range(0, count).Select(i =>
@@ -95,32 +87,66 @@ namespace CatalogService.Controllers
         {
             var nameParts1 = new string[]
             {
-                "WE", "X", "M", "LI"
+                "ProBalance", "Fit", "Yum", "Expert", "Sensetive", "Care", "Happy", "One",
+                "Royal", "Fine"
             };
             var nameParts2 = new string[]
             {
-                "", "", "", " Progec", " Super", " Pro", " Elite"
+                "", "", "", "", " Super", " Pro", " Elite"
+            };
+            var taste = new string[]
+            {
+                "Курица", "Индейка; курица; лосось", "Индейка", "Лосось", "Говядина", "Баранина", "Индейка; курица", "Курица; Говядина"
+            };
+            var specsCat = new string[]
+            {
+                "Для активных котов", "Для кастрированных питомцев котов", "Для котят", "Для взрослых", "Корм для похудения",
+                "Обычный"
+            };
+            var specsDog = new string[]
+            {
+                "Для активных собак", "Для кастрированных собак", "Для щенков", "Для взрослых", "Корм для похудения",
+                "Обычный"
             };
 
             return Enumerable.Range(0, count).Select(i =>
             {
+                var rnd = random.Next(0, 18);
+                var species = "";
+                var spec = "";
+                var tast = taste[random.Next(0, taste.Length)];
+                var desc = "Сбалансированный корм. " +
+                    "Состав корма: дегидратированное " + tast.ToLower() + " мин. 30 % (в т. ч. из курицы мин. 23 %), рис, ячмень, протеины.";
+                if (rnd == 0)
+                {
+                    species = "Хомяк";
+                    spec = "Обычный";
+                }
+                else if (rnd >= 1 && rnd <= 5)
+                {
+                    species = "Собака";
+                    spec = specsDog[random.Next(0, specsDog.Length)];
+                }
+                else
+                {
+                    species = "Кот";
+                    spec = specsCat[random.Next(0, specsCat.Length)];
+                }
+
                 return new Product
                 {
-                    BrandId = brandsGuid[random.Next(0, count + 1)],
-                    Color = "Черный",
-                    Model = nameParts1[random.Next(0, nameParts1.Length)] +
-                        random.Next(0, 158) +
-                        random.Next(0, 745) +
-                        nameParts1[random.Next(0, nameParts1.Length)] +
-                        random.Next(0, 874) +
+                    BrandId = brandsGuid[random.Next(0, brandsGuid.Count)],
+                    Name = nameParts1[random.Next(0, nameParts1.Length)] +
                         nameParts2[random.Next(0, nameParts2.Length)],
-                    Photo1 = System.IO.File.ReadAllBytes($"{basePath}/FakerPictures/proj_{random.Next(0, 18)}.jpg"),
-                    Resolution = "840x480",
-                    OtherSpecs = new Dictionary<string, string> {
-                        { "ProjectionTechnology", "LCD" },
-                        { "HDR", "Нет" },
-                        { "LampType", "LED" }
-                    }
+                    Photo1 = System.IO.File.ReadAllBytes($"{basePath}/FakerPictures/proj_{rnd}.jpg"),
+                    Species = species,
+                    Spec = spec,
+                    Available = true,
+                    Description = desc, 
+                    Taste = tast,
+                    WeightG = random.Next(5, 40) * 100,
+                    PriceKopeck = random.Next(800, 4000) * 100,
+                    Wet = random.Next(0, 4) != 2
                 };
             });
         }
@@ -141,16 +167,5 @@ namespace CatalogService.Controllers
                 return ms.ToArray();
             }
         }
-
-        /*public static byte[] CreateBoxImage(Image image)
-        {
-            using (Image template = Image.Load("Assets/BoxTemplate.png"))
-            {
-                template.Mutate(x => x.DrawImage(image, 1));
-                using var ms = new MemoryStream();
-                template.SaveAsJpeg(ms);
-                return ms.ToArray();
-            }
-        }*/
     }
 }

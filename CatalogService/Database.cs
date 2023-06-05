@@ -19,14 +19,14 @@ namespace CatalogService
             {
                 if (Brands?.FirstOrDefault() == null)
                 {
-                    var b = FakerController.CreateBrands(Random.Shared, 100);
+                    var b = FakerController.CreateBrands(Random.Shared, 18);
                     Brands.AddRange(b);
                     SaveChanges();
                 }
 
                 if (Products?.FirstOrDefault() == null)
                 {
-                    var p = FakerController.CreateProducts(Random.Shared, Brands.Take(100).Select(x => x.Id).ToList(), 100);
+                    var p = FakerController.CreateProducts(Random.Shared, Brands.Take(18).Select(x => x.Id).ToList(), 100);
                     Products.AddRange(p);
                     SaveChanges();
                 }

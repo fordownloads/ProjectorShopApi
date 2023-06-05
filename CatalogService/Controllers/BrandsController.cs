@@ -26,7 +26,7 @@ namespace CatalogService.Controllers
         {
             var limit = 30;
             var offset = limit * (page - 1);
-            return Ok(await db.Brands.Skip(offset).Take(limit).Select(b => new { b.Id, b.Name, b.Country }).ToListAsync());
+            return Ok(await db.Brands.Skip(offset).Take(limit).Select(b => new { b.Id, b.Name, b.Country, b.Email, b.Phone, b.Website }).ToListAsync());
         }
 
         [HttpGet("{id}")]
